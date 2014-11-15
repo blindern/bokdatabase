@@ -60,9 +60,9 @@ sizes = {
     }
 }
 
-def createBarCodes(barcodes, sizes, drawRect=False):
+def createPdf(barcodes, sizes, drawRect=False):
     c = canvas.Canvas("barcodes.pdf", pagesize=A4)
-    
+
     # first box offset
     x0 = sizes['x0']
     y0 = sizes['y0']
@@ -84,7 +84,7 @@ def createBarCodes(barcodes, sizes, drawRect=False):
             firstOnPage = False
             c.setStrokeColorRGB(0, 0, 0)
             c.setLineWidth(.5)
-            
+
             for yi in xrange(sizes['ny']):
                 for xi in xrange(sizes['nx']):
                     c.rect(x0+xi*(w+ox), y0+yi*(h+oy), w, h)
@@ -113,18 +113,41 @@ def createBarCodes(barcodes, sizes, drawRect=False):
 
     c.save()
 
-if __name__ == "__main__":
-    size = sizes[10901]
+def saveBarcodes(filename, list):
+    with open(filename, 'w') as f:
+        f.write('\n'.join(list))
 
-    #start = 0x50+1
-    start = 1
-    count = size['nx'] * size['ny'] * 2 / 2;
-    repeats = range(2)
-    
+def getBarcodes(filename):
+    list = None
+    with open(filename, 'r') as f:
+        list = f.read().split('\n')
+    return list
+
+def makeBarcodes(start, count):
     barcodes = []
     for x in xrange(start, start+count):
         code = "BS-%04X-%02X" % (x, randint(0, 255))
-        for repeat in repeats:
-            barcodes.append(code)
+        barcodes.append(code)
+    return barcodes
 
-    createBarCodes(barcodes, size, drawRect=True)
+if __name__ == "__main__":
+    #size = sizes[10901]
+    size = sizes[8337]
+    copies = 2
+
+    load = True
+    if load:
+        barcodes = getBarcodes('barcodes.txt')
+    else:
+        startnum = 1
+        numpages = 40
+        barcodes = makeBarcodes(startnum, size['nx'] * size['ny'] * numpages / copies)
+        saveBarcodes("barcodes.txt", barcodes)
+
+    barcodes2 = []
+    copies = range(copies)
+    for x in barcodes:
+        for repeat in copies:
+            barcodes2.append(x)
+
+    createPdf(barcodes2, size, drawRect=False)

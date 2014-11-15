@@ -36,7 +36,7 @@ sizes = {
     8337: {
         # first box offset
         'x0': 6.5 * mm,
-        'y0': 14 * mm,
+        'y0': 14.8 * mm,
 
         # box size
         'w': 37 * mm,
@@ -44,7 +44,7 @@ sizes = {
 
         # space between
         'ox': 3 * mm,
-        'oy': 3 * mm,
+        'oy': 2.97 * mm,
 
         # count in each axes
         'nx': 5,

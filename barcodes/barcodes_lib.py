@@ -128,9 +128,11 @@ def getBarcodes(filename):
     if not os.path.isfile(filename):
         return []
 
-    list = None
+    list = []
     with open(filename, 'r') as f:
-        list = f.read().split('\n')
+        for line in f.read().split('\n'):
+            if line.strip() != "":
+                list.append(line.strip())
     return list
 
 def getBarcodesNumberMap(barcodes_full):
